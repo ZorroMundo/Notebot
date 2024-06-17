@@ -5,46 +5,42 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.commands;
+package xyz.chara.notebot.commands.info;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import xyz.nat1an.notebot.suggestions.SongSuggestionProvider;
-import xyz.nat1an.notebot.types.Song;
-import xyz.nat1an.notebot.utils.NotebotFileManager;
-import xyz.nat1an.notebot.utils.NotebotUtils;
+import xyz.chara.notebot.NotebotPlayer;
+import xyz.chara.notebot.types.Song;
+import xyz.chara.notebot.utils.NotebotUtils;
+
+import static xyz.chara.notebot.Notebot.mc;
 
 import java.util.Map;
 
-import static xyz.nat1an.notebot.Notebot.mc;
-
 public class NotebotInfoCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
-                                CommandRegistryAccess commandRegistryAccess) {
+            CommandRegistryAccess commandRegistryAccess) {
         clientCommandSourceCommandDispatcher.register(
-            ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("info")
-                    .then(ClientCommandManager.argument("song", StringArgumentType.greedyString()).suggests(new SongSuggestionProvider())
-                        .executes(NotebotInfoCommand::run)
-                    )
-                )
-        );
+                ClientCommandManager.literal("notebot")
+                        .then(ClientCommandManager.literal("info")
+                                .executes(NotebotInfoCommand::run)));
     }
 
     public static String listRequirements(Song song) {
         StringBuilder result = new StringBuilder();
 
-        result.append("§6Song: §e").append(song.name);
+        result.append("§6Song: §e").append(song.filename);
 
-        for (Map.Entry<Instrument, ItemStack> e : NotebotUtils.INSTRUMENT_TO_ITEM.entrySet()) {
-            int count = (int) song.requirements.stream().filter(n -> n.instrument == e.getKey().ordinal()).count();
+        for (Map.Entry<NoteBlockInstrument, ItemStack> e : NotebotUtils.NoteBlockInstrument_TO_ITEM
+                .entrySet()) {
+            int count = (int) song.requirements.stream().filter(n -> n.NoteBlockInstrument == e.getKey().ordinal())
+                    .count();
 
             if (count != 0) {
                 result.append("\n§6- §e").append(e.getValue().getName().getString()).append(": §a").append(count);
@@ -55,13 +51,20 @@ public class NotebotInfoCommand {
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        Song song = NotebotUtils.parse(
-            NotebotFileManager.getDir().resolve(
-                "songs/" + context.getArgument("song", String.class)
-            )
-        );
+        StringBuilder result = new StringBuilder();
 
-        mc.player.sendMessage(Text.literal(listRequirements(song)));
+        if (NotebotPlayer.song == null) {
+            result.append("§6There's no song currently playing.");
+        } else {
+            result.append("§6Song: §a").append(NotebotPlayer.song.filename);
+
+            result.append("\n§6Time elapsed: §a")
+                    .append(Math.max(NotebotPlayer.timer, 0))
+                    .append("§6 / §a")
+                    .append(NotebotPlayer.song.length).append("§6 ticks.");
+        }
+
+        mc.player.sendMessage(Text.literal(result.toString()));
 
         return 1;
     }

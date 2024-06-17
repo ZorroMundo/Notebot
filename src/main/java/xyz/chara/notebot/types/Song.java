@@ -5,7 +5,7 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.types;
+package xyz.chara.notebot.types;
 
 import com.google.common.collect.Multimap;
 

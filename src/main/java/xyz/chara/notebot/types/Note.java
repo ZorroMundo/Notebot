@@ -5,29 +5,42 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
-package xyz.nat1an.notebot.types;
+package xyz.chara.notebot.types;
 
 public class Note {
 
     public int pitch;
-    public int instrument;
+    public int NoteBlockInstrument;
 
-    public Note(int pitch, int instrument) {
+    public Note(int pitch, int NoteBlockInstrument) {
         this.pitch = pitch;
-        this.instrument = instrument;
+        this.NoteBlockInstrument = NoteBlockInstrument;
+    }
+
+    public int getPitch() {
+        return pitch;
+    }
+
+    public int getNoteBlockInstrument() {
+        return NoteBlockInstrument;
     }
 
     @Override
     public int hashCode() {
-        return pitch * 31 + instrument;
+        return pitch * 31 + NoteBlockInstrument;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Note)) return false;
+        if (!(obj instanceof Note))
+            return false;
 
         Note other = (Note) obj;
-        return instrument == other.instrument && pitch == other.pitch;
+        return NoteBlockInstrument == other.NoteBlockInstrument && pitch == other.pitch;
+    }
+
+    @Override
+    public String toString() {
+        return "NoteBlockInstrument:" + Integer.toString(NoteBlockInstrument) + " Pitch:" + Integer.toString(pitch);
     }
 }

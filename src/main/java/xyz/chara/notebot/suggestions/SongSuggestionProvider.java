@@ -5,7 +5,7 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.suggestions;
+package xyz.chara.notebot.suggestions;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -13,33 +13,35 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import xyz.nat1an.notebot.utils.NotebotFileManager;
+import xyz.chara.notebot.utils.NotebotFileManager;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
-
-// TODO: Song caching to make it faster
+// Old Todo: Song caching to make it faster
+// I don't think it's really necessary.
 public class SongSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-        // TODO: Song search
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context,
+            SuggestionsBuilder builder) throws CommandSyntaxException {
         String keyword = builder.getInput().substring(builder.getStart());
 
-        for (String f : getSongs(keyword)) {
+        for (String f : getSongs(keyword.toLowerCase())) {
             builder.suggest(f);
         }
 
         return builder.buildFuture();
     }
 
-    private Set<String> getSongs(String keyword) {
+    public static Set<String> getSongs(String keyword) {
         Set<String> files = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-        files.clear();
+        if (!files.isEmpty()) {
+            files.clear();
+        }
 
         NotebotFileManager.getDir().resolve("songs/").toFile().mkdirs();
 
@@ -49,7 +51,7 @@ public class SongSuggestionProvider implements SuggestionProvider<FabricClientCo
         }
 
         for (String f : NotebotFileManager.getDir().resolve("songs/").toFile().list()) {
-            if (f.contains(keyword)) {
+            if (f.toLowerCase().contains(keyword)) {
                 files.add(f);
             }
         }

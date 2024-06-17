@@ -5,7 +5,9 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.commands.queue;
+package xyz.chara.notebot.commands.preview;
+
+import static xyz.chara.notebot.Notebot.mc;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,32 +15,22 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
-import xyz.nat1an.notebot.NotebotPlayer;
 
-import static xyz.nat1an.notebot.Notebot.mc;
+public class NotebotPreviewStopCommand {
 
-public class NotebotQueueCleanCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
-                                CommandRegistryAccess commandRegistryAccess) {
+            CommandRegistryAccess commandRegistryAccess) {
         clientCommandSourceCommandDispatcher.register(
-            ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("queue")
-                    .then(ClientCommandManager.literal("clean")
-                        .executes(NotebotQueueCleanCommand::run)
-                    )
-                )
-        );
+                ClientCommandManager.literal("notebot")
+                        .then(ClientCommandManager.literal("preview")
+                                .then(ClientCommandManager.literal("stop")
+                                        .executes(NotebotPreviewStopCommand::run))));
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        Integer amount = NotebotPlayer.queue.size();
-
-        NotebotPlayer.queue.clear();
-
         mc.player.sendMessage(
-            Text.literal("§6Cleared §a" + amount + "§6 songs from the queue.")
-        );
-
+            Text.literal("§6Stopped previewing §a" + NotebotPreviewStartCommand.song.filename + "§6."));
+        NotebotPreviewStartCommand.stop();
         return 1;
     }
 }

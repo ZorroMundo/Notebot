@@ -5,51 +5,39 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.commands.queue;
+package xyz.chara.notebot.commands.queue;
+
+import static xyz.chara.notebot.Notebot.mc;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
-import xyz.nat1an.notebot.NotebotPlayer;
+import xyz.chara.notebot.NotebotPlayer;
 
-import static xyz.nat1an.notebot.Notebot.mc;
-
-public class NotebotQueueRemoveCommand {
+public class NotebotQueueCleanCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
                                 CommandRegistryAccess commandRegistryAccess) {
         clientCommandSourceCommandDispatcher.register(
             ClientCommandManager.literal("notebot")
                 .then(ClientCommandManager.literal("queue")
-                    .then(ClientCommandManager.literal("remove")
-                        .then(
-                            ClientCommandManager.argument(
-                                    "index",
-                                    IntegerArgumentType.integer()
-                                )
-                                .executes(NotebotQueueRemoveCommand::run)
-                        )
+                    .then(ClientCommandManager.literal("clean")
+                        .executes(NotebotQueueCleanCommand::run)
                     )
                 )
         );
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        int index = context.getArgument("index", Integer.class);
+        Integer amount = NotebotPlayer.queue.size();
 
-        String name;
+        NotebotPlayer.queue.clear();
 
-        try {
-            name = NotebotPlayer.queue.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-            mc.player.sendMessage(Text.literal("§cIndex out of bounds."));
-            return 0;
-        }
-
-        mc.player.sendMessage(Text.literal("§6Removed §a" + name + "§6 at §e" + index + " §6from the queue."));
+        mc.player.sendMessage(
+            Text.literal("§6Cleared §a" + amount + "§6 songs from the queue.")
+        );
 
         return 1;
     }

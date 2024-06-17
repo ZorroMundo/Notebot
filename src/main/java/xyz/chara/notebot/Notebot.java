@@ -5,13 +5,14 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot;
+package xyz.chara.notebot;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
+import xyz.chara.notebot.utils.NotebotFileManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.nat1an.notebot.utils.NotebotFileManager;
 
 public class Notebot implements ModInitializer {
     // This logger is used to write text to the console and the log file.

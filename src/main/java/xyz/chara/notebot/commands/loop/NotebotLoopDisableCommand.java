@@ -5,30 +5,33 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.commands;
+package xyz.chara.notebot.commands.loop;
+
+import static xyz.chara.notebot.Notebot.mc;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
-import xyz.nat1an.notebot.NotebotPlayer;
+import net.minecraft.text.Text;
+import xyz.chara.notebot.NotebotPlayer;
 
-public class NotebotStopCommand {
+public class NotebotLoopDisableCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> clientCommandSourceCommandDispatcher,
-                                CommandRegistryAccess commandRegistryAccess) {
+            CommandRegistryAccess commandRegistryAccess) {
         clientCommandSourceCommandDispatcher.register(
-            ClientCommandManager.literal("notebot")
-                .then(ClientCommandManager.literal("stop")
-                    .executes(NotebotStopCommand::run)
-                )
-        );
+                ClientCommandManager.literal("notebot")
+                        .then(ClientCommandManager.literal("loop")
+                                .then(ClientCommandManager.literal("disable")
+                                        .executes(NotebotLoopDisableCommand::run))));
     }
 
     private static int run(CommandContext<FabricClientCommandSource> context) {
-        NotebotPlayer.playing = false;
+        NotebotPlayer.loop = false;
 
-        NotebotPlayer.song = null;
+        mc.player.sendMessage(
+                Text.literal("§6Disabled looping."));
 
         return 1;
     }

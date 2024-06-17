@@ -5,7 +5,7 @@ Notebot is distributed in the hope that it will be useful, but WITHOUT ANY WARRA
 You should have received a copy of the GNU General Public License along with Notebot. If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xyz.nat1an.notebot.suggestions;
+package xyz.chara.notebot.suggestions;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -13,13 +13,14 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import xyz.nat1an.notebot.NotebotPlayer;
+import xyz.chara.notebot.NotebotPlayer;
 
 import java.util.concurrent.CompletableFuture;
 
 public class QueueSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+    public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context,
+            SuggestionsBuilder builder) throws CommandSyntaxException {
         String keyword = builder.getInput().substring(builder.getStart());
 
         for (String i : NotebotPlayer.queue) {

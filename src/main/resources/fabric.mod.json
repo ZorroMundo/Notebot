@@ -5,7 +5,8 @@
   "name": "NoteBot",
   "description": "A mod plays noteblock nicely for you!",
   "authors": [
-    "Nat1an"
+    "Nat1an",
+    "Chara"
   ],
   "contact": {
     "homepage": "https://nat1an.xyz/",
@@ -16,7 +17,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "xyz.nat1an.notebot.Notebot"
+      "xyz.chara.notebot.Notebot"
     ]
   },
   "mixins": [],
